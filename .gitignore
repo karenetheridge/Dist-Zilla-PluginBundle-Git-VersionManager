@@ -1,0 +1,6 @@
+/.ackrc
+/.build/
+!/.gitignore
+/.latest
+/Dist-Zilla-PluginBundle-Git-VersionManager-*/
+/Dist-Zilla-PluginBundle-Git-VersionManager-*.tar.gz
