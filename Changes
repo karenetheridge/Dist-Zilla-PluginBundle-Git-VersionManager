@@ -1,4 +1,5 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
 {{$NEXT}}
-          - Initial release.
+          - Initial release, extracted out of
+            Dist-Zilla-PluginBundle-Author-ETHER-0.129.
