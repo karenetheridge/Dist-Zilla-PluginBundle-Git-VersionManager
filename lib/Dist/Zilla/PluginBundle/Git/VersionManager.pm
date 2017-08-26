@@ -145,6 +145,8 @@ Or, in your plugin bundle's C<configure> method:
     $self->add_bundle('@Git::VersionManager' => \%options)
     $self->add_plugin('Git::Push');
 
+=for Pod::Coverage configure
+
 =head1 DESCRIPTION
 
 This is a L<Dist::Zilla> plugin bundle that manages the version of your distribution, and the C<$VERSION> of the

@@ -92,6 +92,8 @@ In your F<dist.ini> (or a plugin bundle that effectively does the same thing):
 =for :header
 =for stopwords FileMunging MetaProvider OurPkgVersion PkgVersion PodWeaver RewriteVersion
 
+=for Pod::Coverage munge_files
+
 This plugin is a hack and hopefully will soon be made redundant.  It is bundled along with a (the?)
 bundle that needs it, but can also be used with other bundles if such a need is identified.
 
