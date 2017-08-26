@@ -22,13 +22,14 @@ use namespace::clean;
 #   AND the built dist's develop requires list
 # - some plugins can be explicitly exempted (added manually to faciliate
 #   testing)
+# TODO: move into its own distribution
 sub all_plugins_in_prereqs
 { SKIP: {
     skip('this test requires a built dist', 1) if not -f 'META.json';
 
     my ($tzil, %options) = @_;
 
-    my $bundle_name = $options{bundle_name} // '@Author::ETHER';    # TODO: default to dist we are in
+    my $bundle_name = $options{bundle_name} // '@Git::VersionManager';    # TODO: default to dist we are in
     my %additional = map { $_ => undef } @{ $options{additional} // [] };
     my %exempt = map { $_ => undef } @{ $options{exempt} // [] };
 
