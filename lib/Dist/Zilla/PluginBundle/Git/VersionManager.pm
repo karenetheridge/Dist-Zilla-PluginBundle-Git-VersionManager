@@ -5,7 +5,7 @@ package Dist::Zilla::PluginBundle::Git::VersionManager;
 # ABSTRACT: A plugin bundle that manages your version in git
 # KEYWORDS: bundle distribution git version Changes increment
 
-# no version yet until this module is in its own distribution
+our $VERSION = '0.001';
 
 use Moose;
 with
