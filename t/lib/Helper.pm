@@ -3,65 +3,18 @@ package # hide from PAUSE
 
 use parent 'Exporter';
 our @EXPORT = qw(
-    @REMOVED_PLUGINS
-    assert_no_git
     all_plugins_in_prereqs
     no_git_tempdir
     git_in_path
-    notexists
-    recursive_child_files
 );
 
 use Test::More 0.96;
 use Test::Deep;
 use List::Util 1.45 'uniq';
-use Path::Tiny 0.062;
+use Path::Tiny;
 use JSON::MaybeXS;
 use Moose::Util 'find_meta';
 use namespace::clean;
-
-$ENV{USER} = 'notether';
-delete $ENV{DZIL_AIRPLANE};
-delete $ENV{FAKE_RELEASE};
-
-$ENV{HOME} = Path::Tiny->tempdir->stringify;
-
-{
-    use Dist::Zilla::PluginBundle::Author::ETHER;
-    package Dist::Zilla::PluginBundle::Author::ETHER;
-    sub _pause_config { 'URMOM', 'mysekritpassword' }
-}
-
-# load this in advance, as we change directories between configuration and building
-# (TODO: no longer needed with Dist-Zilla PR#552)
-use Pod::Weaver::PluginBundle::Author::ETHER;
-
-# plugins to always remove from test dists, as they use git or the network
-# Our files are copied into source, so Git::GatherDir doesn't see them and
-# besides, we would like to run these tests at install time too!
-our @REMOVED_PLUGINS = qw(
-    Git::GatherDir
-    Git::NextVersion
-    Git::Describe
-    Git::Contributors
-    Git::Check
-    Git::Commit
-    Git::Tag
-    Git::Push
-    Git::CheckFor::MergeConflicts
-    Git::CheckFor::CorrectBranch
-    Git::Remote::Check
-    PromptIfStale
-    EnsurePrereqsInstalled
-);
-
-# confirms that no git-based plugins are running.
-sub assert_no_git
-{
-    my $tzil = shift;
-    my @git_plugins = grep { find_meta($_)->name =~ /Git(?!(?:hubMeta|Hub::Update))/ } @{$tzil->plugins};
-    cmp_deeply(\@git_plugins, [], 'no git-based plugins are running here');
-}
 
 # checks that all plugins in use are in the plugin bundle dist's runtime
 # requires list
@@ -179,32 +132,6 @@ sub git_in_path
             if $count++ > 100;
     }
     return $in_git;
-}
-
-# TODO: replace with Test::Deep::notexists($key)
-sub notexists
-{
-    my @keys = @_;
-    Test::Deep::code(sub {
-        # TODO return 0 unless $self->test_reftype($_[0], 'HASH');
-        return (0, 'not a HASH') if ref $_[0] ne 'HASH';
-        foreach my $key (@keys) {
-            return (0, "'$key' key exists") if exists $_[0]->{$key};
-        }
-        return 1;
-    });
-}
-
-# simple Path::Tiny helper: like `find $dir -type f`
-sub recursive_child_files
-{
-    my $dir = shift;
-    my @found_files;
-    $dir->visit(
-        sub { push @found_files, $_->relative($dir)->stringify if -f },
-        { recurse => 1 },
-    );
-    @found_files;
 }
 
 1;
