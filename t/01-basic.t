@@ -11,10 +11,6 @@ use List::Util 'first';
 
 use lib 't/lib';
 use Helper;
-use NoNetworkHits;
-use NoPrereqChecks;
-
-use Test::File::ShareDir -share => { -dist => { 'Dist-Zilla-PluginBundle-Author-ETHER' => 'share' } };
 
 my $tempdir = no_git_tempdir();
 
