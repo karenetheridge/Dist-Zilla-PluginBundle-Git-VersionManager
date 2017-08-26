@@ -125,6 +125,7 @@ around add_plugins => sub
     return $self->$orig(@plugins);
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 
