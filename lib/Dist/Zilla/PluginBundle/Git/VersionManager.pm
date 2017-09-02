@@ -83,9 +83,13 @@ sub configure
                 ':version' => '2.020',
                 allow_dirty => [ $self->commit_files_after_release ],
             } ],
-        [ 'Git::Tag'            => {} ],
+        [ 'Git::Tag' ],
         [ 'BumpVersionAfterRelease::Transitional' => { ':version' => '0.004' } ],
-        [ 'NextRelease'         => { ':version' => '5.033', time_zone => 'UTC', format => '%-' . ($self->changes_version_columns - 2) . 'v  %{yyyy-MM-dd HH:mm:ss\'Z\'}d%{ (TRIAL RELEASE)}T' } ],
+        [ 'NextRelease'         => {
+                ':version' => '5.033',
+                time_zone => 'UTC',
+                format => '%-' . ($self->changes_version_columns - 2) . 'v  %{yyyy-MM-dd HH:mm:ss\'Z\'}d%{ (TRIAL RELEASE)}T',
+            } ],
         [ 'Git::Commit'         => 'post-release commit' => {
                 ':version' => '2.020',
                 allow_dirty => [ 'Changes' ],
@@ -96,9 +100,11 @@ sub configure
 
     # ensure that additional optional plugins are declared in prereqs
     $self->add_plugins(
-        [ 'Prereqs' => 'prereqs for @Git::VersionManager' =>
-        { '-phase' => 'develop', '-relationship' => 'requires',
-          %{ $self->_develop_requires_as_string_hash } } ]
+        [ 'Prereqs' => 'prereqs for @Git::VersionManager' => {
+                '-phase' => 'develop',
+                '-relationship' => 'requires',
+              %{ $self->_develop_requires_as_string_hash },
+          } ],
     );
 }
 
