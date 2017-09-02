@@ -162,6 +162,8 @@ It is equivalent to the following configuration directly in a F<dist.ini>:
     [RewriteVersion::Transitional]
     :version = 0.004
 
+    [MetaProvides::Update]
+
     [CopyFilesFromRelease / copy Changes]
     filename = Changes
 
