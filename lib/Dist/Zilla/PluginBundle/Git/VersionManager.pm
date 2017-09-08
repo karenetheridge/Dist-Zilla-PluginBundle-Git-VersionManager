@@ -42,13 +42,13 @@ around commit_files_after_release => sub {
 
 sub mvp_multivalue_args { qw(commit_files_after_release) }
 
-has _develop_requires => (
+has _develop_suggests => (
     isa => class_type('CPAN::Meta::Requirements'),
     lazy => 1,
     default => sub { CPAN::Meta::Requirements->new },
     handles => {
-        _add_minimum_develop_requires => 'add_minimum',
-        _develop_requires_as_string_hash => 'as_string_hash',
+        _add_minimum_develop_suggests => 'add_minimum',
+        _develop_suggests_as_string_hash => 'as_string_hash',
     },
 );
 
@@ -102,8 +102,8 @@ sub configure
     $self->add_plugins(
         [ 'Prereqs' => 'prereqs for @Git::VersionManager' => {
                 '-phase' => 'develop',
-                '-relationship' => 'requires',
-              %{ $self->_develop_requires_as_string_hash },
+                '-relationship' => 'suggests',
+              %{ $self->_develop_suggests_as_string_hash },
           } ],
     );
 }
@@ -122,10 +122,10 @@ around add_plugins => sub
         # this plugin is provided in the local distribution
         next if $plugin_spec->[0] eq 'MetaProvides::Update';
 
-        # record develop prereq
+        # record develop-suggests prereq
         my $payload = ref $plugin_spec->[-1] ? $plugin_spec->[-1] : {};
         my $plugin = Dist::Zilla::Util->expand_config_package_name($plugin_spec->[0]);
-        $self->_add_minimum_develop_requires($plugin => $payload->{':version'} // 0);
+        $self->_add_minimum_develop_suggests($plugin => $payload->{':version'} // 0);
     }
 
     return $self->$orig(@plugins);
@@ -196,7 +196,7 @@ It is equivalent to the following configuration directly in a F<dist.ini>:
 
     [Prereqs / prereqs for @Git::VersionManager]
     -phase = develop
-    -relationship = requires
+    -relationship = suggests
     ...all the plugins this bundle uses...
 
 

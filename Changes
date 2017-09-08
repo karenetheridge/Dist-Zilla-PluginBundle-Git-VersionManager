@@ -2,6 +2,9 @@ Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
 {{$NEXT}}
           - add mention of [MetaProvides::Update] in unrolled plugin list
+          - plugins used by the bundle are now injected into develop-suggests
+            prerequisites, rather than develop-requires, so Travis no longer
+            feels obliged to install them when testing the built distribution
 
 0.001     2017-08-27 00:30:08Z
           - Initial release, extracted out of
