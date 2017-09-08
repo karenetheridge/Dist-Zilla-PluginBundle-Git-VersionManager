@@ -8,7 +8,7 @@ Dist::Zilla::PluginBundle::Git::VersionManager - A plugin bundle that manages yo
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -39,6 +39,8 @@ It is equivalent to the following configuration directly in a F<dist.ini>:
     [RewriteVersion::Transitional]
     :version = 0.004
 
+    [MetaProvides::Update]
+
     [CopyFilesFromRelease / copy Changes]
     filename = Changes
 
@@ -65,7 +67,7 @@ It is equivalent to the following configuration directly in a F<dist.ini>:
 
     [Prereqs / prereqs for @Git::VersionManager]
     -phase = develop
-    -relationship = requires
+    -relationship = suggests
     ...all the plugins this bundle uses...
 
 =for Pod::Coverage configure
