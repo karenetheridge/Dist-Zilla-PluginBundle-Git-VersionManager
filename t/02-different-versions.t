@@ -11,6 +11,8 @@ use List::Util 'first';
 use lib 't/lib';
 use Helper;
 
+delete $ENV{V};
+
 my $tempdir = no_git_tempdir();
 
 my $tzil = Builder->from_config(
