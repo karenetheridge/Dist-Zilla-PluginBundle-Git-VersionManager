@@ -1,6 +1,9 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
 {{$NEXT}}
+          - new 'bump_only_matching_versions' option, for use in distributions
+            such as URI where some modules have different $VERSIONs that
+            should not be altered to match the distribution version
 
 0.002     2017-09-08 01:26:11Z
           - add mention of [MetaProvides::Update] in unrolled plugin list

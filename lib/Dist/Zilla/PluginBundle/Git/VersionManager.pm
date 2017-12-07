@@ -19,6 +19,14 @@ use Moose::Util::TypeConstraints qw(subtype where class_type);
 use CPAN::Meta::Requirements;
 use namespace::autoclean;
 
+has bump_only_matching_versions => (
+    is => 'ro',
+    isa => 'Bool',
+    init_arg => undef,
+    lazy => 1,
+    default => sub { $_[0]->payload->{bump_only_matching_versions} },
+);
+
 has changes_version_columns => (
     is => 'ro', isa => subtype('Int', where { $_ > 0 && $_ < 20 }),
     init_arg => undef,
@@ -73,7 +81,9 @@ sub configure
 
     $self->add_plugins(
         # VersionProvider (and a file munger, for the transitional usecase)
-        [ 'RewriteVersion::Transitional' => { ':version' => '0.004' } ],
+        $self->bump_only_matching_versions
+            ? [ 'VersionFromMainModule' ]
+            : [ 'RewriteVersion::Transitional' => { ':version' => '0.004' } ],
 
         [ 'MetaProvides::Update' ],
 
@@ -84,7 +94,14 @@ sub configure
                 allow_dirty => [ $self->commit_files_after_release ],
             } ],
         [ 'Git::Tag' ],
-        [ 'BumpVersionAfterRelease::Transitional' => { ':version' => '0.004' } ],
+
+        # for all_matching => 1, we presume the author already has versions set up the way he wants them (and for
+        # consistency with the removal of RewriteVersion above), so we do not bother with it;
+        # this also lets us specify the minimum necessary version for the feature.
+        $self->bump_only_matching_versions
+            ? [ 'BumpVersionAfterRelease' => { ':version' => '0.016', all_matching => 1 } ]
+            : [ 'BumpVersionAfterRelease::Transitional' => { ':version' => '0.004' } ],
+
         [ 'NextRelease'         => {
                 ':version' => '5.033',
                 time_zone => 'UTC',
@@ -163,7 +180,7 @@ release commit to C<git>, which is then tagged, and then the C<$VERSION> in code
 change is committed.  The default options used for the plugins are carefully curated to work together, but all
 can be customized or overridden (see below).
 
-It is equivalent to the following configuration directly in a F<dist.ini>:
+When no custom options are passed, is equivalent to the following configuration directly in a F<dist.ini>:
 
     [RewriteVersion::Transitional]
     :version = 0.004
@@ -203,6 +220,24 @@ It is equivalent to the following configuration directly in a F<dist.ini>:
 =head1 OPTIONS / OVERRIDES
 
 =for stopwords CopyFilesFromRelease
+
+=head2 bump_only_matching_versions
+
+If your distribution has many module files, and not all of them have a C<$VERSION> declaration that matches the
+main module (and distribution) version, set this option to true. This has two effects that differ from the default
+case:
+
+=for :list
+* while preparing the build and release, I<no> module C<$VERSION> declarations will be altered to match the
+  distribution version (therefore they must be set to the desired values in advance).
+* after the release, only module C<$VERSION> declarations that match the release version will see their values
+  incremented. All C<$VERSION>s that do not match will be left alone: you must manage them manually. Likewise,
+  no missing $VERSIONs will be added.
+
+Defaults to false (meaning all modules will have their C<$VERSION> declarations synchronized before release and
+incremented after release).
+
+First available in version 0.003.
 
 =head2 commit_files_after_release
 
