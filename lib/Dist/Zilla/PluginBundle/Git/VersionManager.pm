@@ -191,6 +191,9 @@ release commit to C<git>, which is then tagged, and then the C<$VERSION> in code
 change is committed.  The default options used for the plugins are carefully curated to work together, but all
 can be customized or overridden (see below).
 
+Modules without C<$VERSION> declarations will have them added for the release, with that change also committed
+back to the local repository.
+
 When no custom options are passed, is equivalent to the following configuration directly in a F<dist.ini>:
 
     [RewriteVersion::Transitional]
