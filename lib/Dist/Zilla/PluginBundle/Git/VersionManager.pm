@@ -112,7 +112,15 @@ sub configure
             } ],
         [ 'Git::Commit'         => 'post-release commit' => {
                 ':version' => '2.020',
-                allow_dirty => [ 'Changes' ],
+                allow_dirty => [
+                    'Changes',
+                    !exists($self->payload->{'BumpVersionAfterRelease::Transitional.munge_makefile_pl'})
+                            || $self->payload->{'BumpVersionAfterRelease::Transitional.munge_makefile_pl'}
+                        ? 'Makefile.PL' : (),
+                    !exists($self->payload->{'BumpVersionAfterRelease::Transitional.munge_build_pl'})
+                            || $self->payload->{'BumpVersionAfterRelease::Transitional.munge_build_pl'}
+                        ? 'Build.PL' : (),
+                ],
                 allow_dirty_match => [ '^lib/.*\.pm$' ],
                 commit_msg => 'increment $VERSION after %v release'
             } ],
