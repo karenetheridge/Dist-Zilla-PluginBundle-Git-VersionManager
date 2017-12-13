@@ -4,7 +4,7 @@ package Dist::Zilla::Plugin::MetaProvides::Update;
 # vim: set ts=8 sts=4 sw=4 tw=115 et :
 # ABSTRACT: A plugin to fix "provides" metadata after [RewriteVersion] modified $VERSION declarations
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Moose;
 with 'Dist::Zilla::Role::FileMunger';

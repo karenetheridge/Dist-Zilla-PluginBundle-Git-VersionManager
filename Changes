@@ -1,5 +1,7 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
+{{$NEXT}}
+
 0.003     2017-12-13 02:34:17Z
           - new 'bump_only_matching_versions' option, for use in distributions
             such as URI where some modules have different $VERSIONs that
