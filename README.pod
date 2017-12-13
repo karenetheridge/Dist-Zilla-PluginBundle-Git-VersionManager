@@ -8,7 +8,7 @@ Dist::Zilla::PluginBundle::Git::VersionManager - A plugin bundle that manages yo
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -34,7 +34,10 @@ release commit to C<git>, which is then tagged, and then the C<$VERSION> in code
 change is committed.  The default options used for the plugins are carefully curated to work together, but all
 can be customized or overridden (see below).
 
-It is equivalent to the following configuration directly in a F<dist.ini>:
+Modules without C<$VERSION> declarations will have them added for the release, with that change also committed
+back to the local repository.
+
+When no custom options are passed, is equivalent to the following configuration directly in a F<dist.ini>:
 
     [RewriteVersion::Transitional]
     :version = 0.004
@@ -75,6 +78,29 @@ It is equivalent to the following configuration directly in a F<dist.ini>:
 =head1 OPTIONS / OVERRIDES
 
 =for stopwords CopyFilesFromRelease
+
+=head2 bump_only_matching_versions
+
+If your distribution has many module files, and not all of them have a C<$VERSION> declaration that matches the
+main module (and distribution) version, set this option to true. This has two effects that differ from the default
+case:
+
+=over 4
+
+=item *
+
+while preparing the build and release, I<no> module C<$VERSION> declarations will be altered to match the distribution version (therefore they must be set to the desired values in advance). Consequently, attempting to alter the distribution version with C<V=...> will result in a fatal error.
+
+=item *
+
+after the release, only module C<$VERSION> declarations that match the release version will see their values incremented. All C<$VERSION>s that do not match will be left alone: you must manage them manually. Likewise, no missing $VERSIONs will be added.
+
+=back
+
+Defaults to false (meaning all modules will have their C<$VERSION> declarations synchronized before release and
+incremented after release).
+
+First available in version 0.003.
 
 =head2 commit_files_after_release
 
