@@ -50,13 +50,13 @@ around commit_files_after_release => sub {
 
 sub mvp_multivalue_args { qw(commit_files_after_release) }
 
-has _develop_suggests => (
+has _plugin_requirements => (
     isa => class_type('CPAN::Meta::Requirements'),
     lazy => 1,
     default => sub { CPAN::Meta::Requirements->new },
     handles => {
-        _add_minimum_develop_suggests => 'add_minimum',
-        _develop_suggests_as_string_hash => 'as_string_hash',
+        _add_minimum_plugin_requirement => 'add_minimum',
+        _plugin_requirements_as_string_hash => 'as_string_hash',
     },
 );
 
@@ -131,7 +131,7 @@ sub configure
         [ 'Prereqs' => 'prereqs for @Git::VersionManager' => {
                 '-phase' => 'develop',
                 '-relationship' => 'suggests',
-              %{ $self->_develop_suggests_as_string_hash },
+              %{ $self->_plugin_requirements_as_string_hash },
           } ],
     );
 }
@@ -153,7 +153,7 @@ around add_plugins => sub
         # record develop-suggests prereq
         my $payload = ref $plugin_spec->[-1] ? $plugin_spec->[-1] : {};
         my $plugin = Dist::Zilla::Util->expand_config_package_name($plugin_spec->[0]);
-        $self->_add_minimum_develop_suggests($plugin => $payload->{':version'} // 0);
+        $self->_add_minimum_plugin_requirement($plugin => $payload->{':version'} // 0);
     }
 
     return $self->$orig(@plugins);
