@@ -1,6 +1,10 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
 {{$NEXT}}
+          - plugin requirements are no longer injected into develop-suggests
+            prereqs by default; this behaviour can be preserved (or switched
+            to another prereq phase/type) with the new 'plugin_prereq_phase'
+            and 'plugin_prereq_relationship' configuration options
 
 0.003     2017-12-13 02:34:17Z
           - new 'bump_only_matching_versions' option, for use in distributions

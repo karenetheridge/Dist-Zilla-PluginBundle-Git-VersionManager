@@ -60,6 +60,20 @@ has _plugin_requirements => (
     },
 );
 
+has plugin_prereq_phase => (
+    is => 'ro',
+    isa => 'Str',
+    lazy => 1,
+    default => sub { $_[0]->payload->{plugin_prereq_phase} // '' },
+);
+
+has plugin_prereq_relationship => (
+    is => 'ro',
+    isa => 'Str',
+    lazy => 1,
+    default => sub { $_[0]->payload->{plugin_prereq_relationship} // '' },
+);
+
 sub configure
 {
     my $self = shift;
@@ -126,17 +140,18 @@ sub configure
             } ],
     );
 
-    # ensure that additional optional plugins are declared in prereqs
+    # add used plugins to desired prereq section
     $self->add_plugins(
         [ 'Prereqs' => 'prereqs for @Git::VersionManager' => {
-                '-phase' => 'develop',
-                '-relationship' => 'suggests',
+                '-phase' => $self->plugin_prereq_phase,
+                '-relationship' => $self->plugin_prereq_relationship,
               %{ $self->_plugin_requirements_as_string_hash },
           } ],
-    );
+    ) if $self->plugin_prereq_phase and $self->plugin_prereq_relationship;
 }
 
-# determine develop prereqs
+# capture minimum requirements for used plugins
+# TODO: this can be pulled off into a separately-distributed role
 around add_plugins => sub
 {
     my ($orig, $self, @plugins) = @_;
@@ -150,7 +165,7 @@ around add_plugins => sub
         # this plugin is provided in the local distribution
         next if $plugin_spec->[0] eq 'MetaProvides::Update';
 
-        # record develop-suggests prereq
+        # save requirement for (possible) later prereq population
         my $payload = ref $plugin_spec->[-1] ? $plugin_spec->[-1] : {};
         my $plugin = Dist::Zilla::Util->expand_config_package_name($plugin_spec->[0]);
         $self->_add_minimum_plugin_requirement($plugin => $payload->{':version'} // 0);
@@ -226,8 +241,8 @@ When no custom options are passed, is equivalent to the following configuration 
     commit_msg = increment $VERSION after %v release
 
     [Prereqs / prereqs for @Git::VersionManager]
-    -phase = develop
-    -relationship = suggests
+    -phase = .. if plugin_prereq_phase specified ..
+    -relationship = .. if plugin_prereq_relationship specified ..
     ...all the plugins this bundle uses...
 
 
@@ -275,6 +290,14 @@ allocated in F<Changes> entries to the version string. Defaults to 10.
 Unused if C<NextRelease.format = anything> is passed into the configuration.
 
 =for stopwords customizations
+
+=head2 plugin_prereq_phase, plugin_prereq_relationship
+
+If these are set, then plugins used by the bundle (with minimum version requirements) are injected into the
+distribution's prerequisites at the specified phase and relationship. By default these options are disabled. If
+set, the recommended values are C<develop> and C<suggests>.
+
+First available in version 0.004.
 
 =head2 other customizations
 
