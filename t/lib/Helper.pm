@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 package # hide from PAUSE
     Helper;
 
@@ -135,7 +138,7 @@ sub git_in_path
         $dir = $dir->parent;
     }
     continue {
-        die "too many iterations when traversing $tempdir!"
+        die "too many iterations when traversing $dir!"
             if $count++ > 100;
     }
     return $in_git;
