@@ -1,6 +1,6 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
-{{$NEXT}}
+0.004     2018-01-01 00:19:15Z
           - plugin requirements are no longer injected into develop-suggests
             prereqs by default; this behaviour can be preserved (or switched
             to another prereq phase/type) with the new 'plugin_prereq_phase'

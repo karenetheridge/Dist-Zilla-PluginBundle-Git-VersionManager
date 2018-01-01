@@ -8,7 +8,7 @@ Dist::Zilla::PluginBundle::Git::VersionManager - A plugin bundle that manages yo
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -69,8 +69,8 @@ When no custom options are passed, is equivalent to the following configuration 
     commit_msg = increment $VERSION after %v release
 
     [Prereqs / prereqs for @Git::VersionManager]
-    -phase = develop
-    -relationship = suggests
+    -phase = .. if plugin_prereq_phase specified ..
+    -relationship = .. if plugin_prereq_relationship specified ..
     ...all the plugins this bundle uses...
 
 =for Pod::Coverage configure
@@ -123,6 +123,14 @@ allocated in F<Changes> entries to the version string. Defaults to 10.
 Unused if C<NextRelease.format = anything> is passed into the configuration.
 
 =for stopwords customizations
+
+=head2 plugin_prereq_phase, plugin_prereq_relationship
+
+If these are set, then plugins used by the bundle (with minimum version requirements) are injected into the
+distribution's prerequisites at the specified phase and relationship. By default these options are disabled. If
+set, the recommended values are C<develop> and C<suggests>.
+
+First available in version 0.004.
 
 =head2 other customizations
 
