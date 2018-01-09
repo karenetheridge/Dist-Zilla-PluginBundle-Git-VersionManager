@@ -209,7 +209,7 @@ can be customized or overridden (see below).
 Modules without C<$VERSION> declarations will have them added for the release, with that change also committed
 back to the local repository.
 
-When no custom options are passed, is equivalent to the following configuration directly in a F<dist.ini>:
+When no custom options are passed, it is equivalent to the following configuration directly in a F<dist.ini>:
 
     [RewriteVersion::Transitional]
     :version = 0.004
