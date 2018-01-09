@@ -97,6 +97,12 @@ sub configure
     }
 
     $self->add_plugins(
+        # adding this first indicates the start of the bundle in x_Dist_Zilla metadata
+        [ 'Prereqs' => 'pluginbundle version' => {
+                '-phase' => 'develop', '-relationship' => 'recommends',
+                $self->meta->name => $self->VERSION,
+            } ],
+
         # VersionProvider (and a file munger, for the transitional usecase)
         $self->bump_only_matching_versions
             ? [ 'VersionFromMainModule' ]
@@ -210,6 +216,11 @@ Modules without C<$VERSION> declarations will have them added for the release, w
 back to the local repository.
 
 When no custom options are passed, it is equivalent to the following configuration directly in a F<dist.ini>:
+
+    [Prereqs / pluginbundle version]
+    -phase = develop
+    -relationship = recommends
+    Dist::Zilla::PluginBundle::Git::NextVersion = <current installed version>
 
     [RewriteVersion::Transitional]
     :version = 0.004
