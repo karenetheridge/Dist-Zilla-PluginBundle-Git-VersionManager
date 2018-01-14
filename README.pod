@@ -8,7 +8,7 @@ Dist::Zilla::PluginBundle::Git::VersionManager - A plugin bundle that manages yo
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
@@ -37,7 +37,12 @@ can be customized or overridden (see below).
 Modules without C<$VERSION> declarations will have them added for the release, with that change also committed
 back to the local repository.
 
-When no custom options are passed, is equivalent to the following configuration directly in a F<dist.ini>:
+When no custom options are passed, it is equivalent to the following configuration directly in a F<dist.ini>:
+
+    [Prereqs / pluginbundle version]
+    -phase = develop
+    -relationship = recommends
+    Dist::Zilla::PluginBundle::Git::NextVersion = <current installed version>
 
     [RewriteVersion::Transitional]
     :version = 0.004
