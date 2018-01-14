@@ -1,5 +1,7 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
+{{$NEXT}}
+
 0.005     2018-01-14 22:56:06Z
           - inject the currently-installed version of the bundle into
             develop-recommends prereqs (this allows one to see which version
