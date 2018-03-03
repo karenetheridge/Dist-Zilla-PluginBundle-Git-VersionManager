@@ -100,7 +100,7 @@ sub configure
             # i.e. Git::NextVersion.foo = ... in dist.ini is rewritten in the payload as
             # RewriteVersion::Transitional.foo = ... so it can override defaults passed in by the caller
             # (a wrapper plugin bundle.)
-            : [ 'RewriteVersion::Transitional' => { ':version' => '0.004', $self->_payload_for($fallback_version_provider) } ],
+            : [ 'RewriteVersion::Transitional' => { ':version' => '0.004', $self->_payload_for($fallback_version_provider), $self->_payload_for('RewriteVersion') } ],
 
         [ 'MetaProvides::Update' ],
 
@@ -111,13 +111,20 @@ sub configure
                 allow_dirty => [ $self->commit_files_after_release ],
             } ],
         [ 'Git::Tag' ],
+    );
 
+    my %bump_version_payload = (
+        $self->_payload_for('BumpVersionAfterRelease'),
+        $self->_payload_for('BumpVersionAfterRelease::Transitional'),
+    );
+
+    $self->add_plugins(
         # when using all_matching => 1, we presume the author already has versions set up the way he wants them
         # (and for consistency with the removal of RewriteVersion above), so we do not bother with using
         # ::Transitional; this also lets us specify the minimum necessary version for the feature.
         $self->bump_only_matching_versions
-            ? [ 'BumpVersionAfterRelease' => { ':version' => '0.016', all_matching => 1 } ]
-            : [ 'BumpVersionAfterRelease::Transitional' => { ':version' => '0.004' } ],
+            ? [ 'BumpVersionAfterRelease' => { ':version' => '0.016', all_matching => 1, %bump_version_payload } ]
+            : [ 'BumpVersionAfterRelease::Transitional' => { ':version' => '0.004', %bump_version_payload } ],
 
         [ 'NextRelease'         => {
                 ':version' => '5.033',
@@ -128,11 +135,10 @@ sub configure
                 ':version' => '2.020',
                 allow_dirty => [
                     'Changes',
-                    !exists($self->payload->{'BumpVersionAfterRelease::Transitional.munge_makefile_pl'})
-                            || $self->payload->{'BumpVersionAfterRelease::Transitional.munge_makefile_pl'}
+                    # these default to true when not provided
+                    !exists($bump_version_payload{munge_makefile_pl}) || $bump_version_payload{munge_makefile_pl}
                         ? 'Makefile.PL' : (),
-                    !exists($self->payload->{'BumpVersionAfterRelease::Transitional.munge_build_pl'})
-                            || $self->payload->{'BumpVersionAfterRelease::Transitional.munge_build_pl'}
+                    !exists($bump_version_payload{munge_build_pl}) || $bump_version_payload{munge_build_pl}
                         ? 'Build.PL' : (),
                 ],
                 allow_dirty_match => [ '^lib/.*\.pm$' ],
