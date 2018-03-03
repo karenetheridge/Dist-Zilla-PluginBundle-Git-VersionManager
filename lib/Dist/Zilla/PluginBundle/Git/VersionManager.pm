@@ -85,17 +85,6 @@ sub configure
         $self->payload->{'RewriteVersion::Transitional.fallback_version_provider'}
             // 'Git::NextVersion';  # TODO: move this default to an attribute; be careful of overlays
 
-    # allow override of any config option for the fallback_version_provider plugin
-    # by specifying it as if it was used directly
-    # i.e. Git::NextVersion.foo = ... in dist.ini is rewritten in the payload as
-    # RewriteVersion::Transitional.foo = ... so it can override defaults passed in by the caller
-    # (a wrapper plugin bundle.)
-    foreach my $fallback_key (grep { /^\Q$fallback_version_provider.\E/ } keys %{ $self->payload })
-    {
-        (my $new_key = $fallback_key) =~ s/^\Q$fallback_version_provider\E(?=\.)/RewriteVersion::Transitional/;
-        $self->payload->{$new_key} = delete $self->payload->{$fallback_key};
-    }
-
     $self->add_plugins(
         # adding this first indicates the start of the bundle in x_Dist_Zilla metadata
         [ 'Prereqs' => 'pluginbundle version' => {
@@ -106,7 +95,12 @@ sub configure
         # VersionProvider (and a file munger, for the transitional usecase)
         $self->bump_only_matching_versions
             ? [ 'VersionFromMainModule' ]
-            : [ 'RewriteVersion::Transitional' => { ':version' => '0.004' } ],
+            # allow override of any config option for the fallback_version_provider plugin
+            # by specifying it as if it was used directly
+            # i.e. Git::NextVersion.foo = ... in dist.ini is rewritten in the payload as
+            # RewriteVersion::Transitional.foo = ... so it can override defaults passed in by the caller
+            # (a wrapper plugin bundle.)
+            : [ 'RewriteVersion::Transitional' => { ':version' => '0.004', $self->_payload_for($fallback_version_provider) } ],
 
         [ 'MetaProvides::Update' ],
 
@@ -179,6 +173,22 @@ around add_plugins => sub
 
     return $self->$orig(@plugins);
 };
+
+# extracts all payload configs for a specific plugin, deletes them from the payload,
+# and returns those entries with the plugin name stripped
+sub _payload_for
+{
+    my ($self, $plugin_name) = @_;
+
+    my %extracted;
+    foreach my $full_key (grep { /^\Q$plugin_name.\E/ } keys %{ $self->payload })
+    {
+        (my $base_key = $full_key) =~ s/^\Q$plugin_name.\E//;
+        $extracted{$base_key} = delete $self->payload->{$full_key};
+    }
+
+    return %extracted;
+}
 
 __PACKAGE__->meta->make_immutable;
 1;
