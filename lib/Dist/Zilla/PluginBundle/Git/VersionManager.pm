@@ -112,9 +112,9 @@ sub configure
             } ],
         [ 'Git::Tag' ],
 
-        # for all_matching => 1, we presume the author already has versions set up the way he wants them (and for
-        # consistency with the removal of RewriteVersion above), so we do not bother with it;
-        # this also lets us specify the minimum necessary version for the feature.
+        # when using all_matching => 1, we presume the author already has versions set up the way he wants them
+        # (and for consistency with the removal of RewriteVersion above), so we do not bother with using
+        # ::Transitional; this also lets us specify the minimum necessary version for the feature.
         $self->bump_only_matching_versions
             ? [ 'BumpVersionAfterRelease' => { ':version' => '0.016', all_matching => 1 } ]
             : [ 'BumpVersionAfterRelease::Transitional' => { ':version' => '0.004' } ],
