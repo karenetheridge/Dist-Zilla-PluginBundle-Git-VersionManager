@@ -90,9 +90,9 @@ sub configure
     # i.e. Git::NextVersion.foo = ... in dist.ini is rewritten in the payload as
     # RewriteVersion::Transitional.foo = ... so it can override defaults passed in by the caller
     # (a wrapper plugin bundle.)
-    foreach my $fallback_key (grep { /^$fallback_version_provider\./ } keys %{ $self->payload })
+    foreach my $fallback_key (grep { /^\Q$fallback_version_provider.\E/ } keys %{ $self->payload })
     {
-        (my $new_key = $fallback_key) =~ s/^$fallback_version_provider(?=\.)/RewriteVersion::Transitional/;
+        (my $new_key = $fallback_key) =~ s/^\Q$fallback_version_provider\E(?=\.)/RewriteVersion::Transitional/;
         $self->payload->{$new_key} = delete $self->payload->{$fallback_key};
     }
 
