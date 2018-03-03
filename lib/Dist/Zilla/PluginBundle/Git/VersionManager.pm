@@ -235,6 +235,8 @@ When no custom options are passed, it is equivalent to the following configurati
     [RewriteVersion::Transitional]
     :version = 0.004
 
+    ; ... and whatever plugin and configs were specified in <fallback_version_provider>
+
     [MetaProvides::Update]
 
     [CopyFilesFromRelease / copy Changes]
