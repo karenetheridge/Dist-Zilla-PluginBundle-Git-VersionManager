@@ -95,12 +95,13 @@ cmp_deeply(
     '[Prereqs] plugin(s) do not inject into requires relationship; no plugin prereqs by default',
 );
 
-my $rewrite_version_plugin = first { $_->isa('Dist::Zilla::Plugin::RewriteVersion::Transitional') } @{ $tzil->plugins };
-is($rewrite_version_plugin->fallback_version_provider, 'Foo::Bar', 'override passed for fallback_version_provider');
 cmp_deeply(
-    $rewrite_version_plugin->_fallback_version_provider_args,
-    { version_regexp => '^ohhai' },
-    '..and it was used to extract the arguments for that plugin',
+    (first { $_->isa('Dist::Zilla::Plugin::RewriteVersion::Transitional') } @{ $tzil->plugins }),
+    methods(
+        fallback_version_provider => 'Foo::Bar',
+        _fallback_version_provider_args => { version_regexp => '^ohhai' },
+    ),
+    'marshalled all RewriteVersion::Transitional arguments',
 );
 
 my $git_tag_plugin = first { $_->isa('Dist::Zilla::Plugin::Git::Tag') } @{ $tzil->plugins };
