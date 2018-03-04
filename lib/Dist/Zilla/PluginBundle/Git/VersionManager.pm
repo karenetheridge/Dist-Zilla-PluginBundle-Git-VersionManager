@@ -288,7 +288,8 @@ case:
 =for :list
 * while preparing the build and release, I<no> module C<$VERSION> declarations will be altered to match the
   distribution version (therefore they must be set to the desired values in advance). Consequently, attempting to
-  alter the distribution version with C<V=...> will result in a fatal error.
+  alter the distribution version with C<V=...> will now result in a fatal error, rather than all files being
+  updated to use that version.
 * after the release, only module C<$VERSION> declarations that match the release version will see their values
   incremented. All C<$VERSION>s that do not match will be left alone: you must manage them manually. Likewise,
   no missing $VERSIONs will be added.
