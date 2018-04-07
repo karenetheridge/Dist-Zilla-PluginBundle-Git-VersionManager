@@ -78,9 +78,6 @@ sub configure
 {
     my $self = shift;
 
-    die 'you cannot change the distribution version with $V along with bump_only_matching_versions: update the .pm file(s) first'
-        if $ENV{V} and $self->bump_only_matching_versions;
-
     my $fallback_version_provider =
         $self->payload->{'RewriteVersion::Transitional.fallback_version_provider'}
             // 'Git::NextVersion';  # TODO: move this default to an attribute; be careful of overlays
@@ -94,7 +91,8 @@ sub configure
 
         # VersionProvider (and a file munger, for the transitional usecase)
         $self->bump_only_matching_versions
-            ? [ 'VersionFromMainModule' ]
+            ? [ 'VersionFromMainModule' => exists $ENV{V} ? { ':version' => '0.04' } : () ]
+
             # allow override of any config option for the fallback_version_provider plugin
             # by specifying it as if it was used directly
             # i.e. Git::NextVersion.foo = ... in dist.ini is rewritten in the payload as
@@ -287,9 +285,7 @@ case:
 
 =for :list
 * while preparing the build and release, I<no> module C<$VERSION> declarations will be altered to match the
-  distribution version (therefore they must be set to the desired values in advance). Consequently, attempting to
-  alter the distribution version with C<V=...> will now result in a fatal error, rather than all files being
-  updated to use that version.
+  distribution version (therefore they must be set to the desired values in advance).
 * after the release, only module C<$VERSION> declarations that match the release version will see their values
   incremented. All C<$VERSION>s that do not match will be left alone: you must manage them manually. Likewise,
   no missing $VERSIONs will be added.
