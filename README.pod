@@ -8,7 +8,7 @@ Dist::Zilla::PluginBundle::Git::VersionManager - A plugin bundle that manages yo
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 
@@ -46,6 +46,8 @@ When no custom options are passed, it is equivalent to the following configurati
 
     [RewriteVersion::Transitional]
     :version = 0.004
+
+    ; ... and whatever plugin and configs were specified in <fallback_version_provider>
 
     [MetaProvides::Update]
 
@@ -94,7 +96,7 @@ case:
 
 =item *
 
-while preparing the build and release, I<no> module C<$VERSION> declarations will be altered to match the distribution version (therefore they must be set to the desired values in advance). Consequently, attempting to alter the distribution version with C<V=...> will result in a fatal error.
+while preparing the build and release, I<no> module C<$VERSION> declarations will be altered to match the distribution version (therefore they must be set to the desired values in advance).
 
 =item *
 
