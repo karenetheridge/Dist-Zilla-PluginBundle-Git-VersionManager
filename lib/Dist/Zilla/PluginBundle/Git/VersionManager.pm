@@ -98,7 +98,12 @@ sub configure
             # i.e. Git::NextVersion.foo = ... in dist.ini is rewritten in the payload as
             # RewriteVersion::Transitional.foo = ... so it can override defaults passed in by the caller
             # (a wrapper plugin bundle.)
-            : [ 'RewriteVersion::Transitional' => { ':version' => '0.004', $self->_payload_for($fallback_version_provider), $self->_payload_for('RewriteVersion') } ],
+            : [ 'RewriteVersion::Transitional' => {
+                    ':version' => '0.004',
+                    $self->_payload_for('RewriteVersion::Transitional'),,
+                    $self->_payload_for('RewriteVersion'),
+                    $self->_payload_for($fallback_version_provider),
+                } ],
 
         [ 'MetaProvides::Update' ],
 

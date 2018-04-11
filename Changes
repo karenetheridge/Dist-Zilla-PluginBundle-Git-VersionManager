@@ -1,6 +1,9 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
 {{$NEXT}}
+          - fix handling of arguments that get passed down from a calling
+            bundle (fixes test failures in [@Author::ETHER] after releasing
+            [@Git::NextVersion] 0.006)
 
 0.006     2018-04-08 00:17:41Z
           - respect overridden options to RewriteVersion,
