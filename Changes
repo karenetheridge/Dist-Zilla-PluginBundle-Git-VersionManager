@@ -1,5 +1,7 @@
 Revision history for Dist-Zilla-PluginBundle-Git-VersionManager
 
+{{$NEXT}}
+
 0.007     2018-04-11 03:44:43Z
           - fix handling of arguments that get passed down from a calling
             bundle (fixes test failures in [@Author::ETHER] after releasing
