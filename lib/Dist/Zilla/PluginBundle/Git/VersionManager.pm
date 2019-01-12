@@ -326,7 +326,7 @@ Unused if C<NextRelease.format = anything> is passed into the configuration.
 
 If these are set, then plugins used by the bundle (with minimum version requirements) are injected into the
 distribution's prerequisites at the specified phase and relationship. By default these options are disabled. If
-set, the recommended values are C<develop> and C<suggests>.
+set, the recommended values are either C<x_Dist_Zilla> and C<requires>, or C<develop> and C<suggests>.
 
 First available in version 0.004.
 
