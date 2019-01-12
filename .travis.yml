@@ -19,10 +19,9 @@ perl:
   - "5.10"
 env:
   global:
+    - AUTHOR_TESTING=1
     - AUTOMATED_TESTING=1
     - RELEASE_TESTING=0
-    - HARNESS_TIMER=1
-
 before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
