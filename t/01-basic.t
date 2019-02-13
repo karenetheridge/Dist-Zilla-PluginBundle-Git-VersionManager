@@ -86,7 +86,7 @@ cmp_deeply(
 );
 
 cmp_deeply(
-    [ grep { $_->isa('Dist::Zilla::Plugin::Prereqs') } @{ $tzil->plugins } ],
+    [ grep $_->isa('Dist::Zilla::Plugin::Prereqs'), @{ $tzil->plugins } ],
     all(
         [ ignore ], # just one element in result list
         array_each(

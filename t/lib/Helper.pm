@@ -43,14 +43,14 @@ sub all_plugins_in_prereqs
     my ($tzil, %options) = @_;
 
     my $bundle_name = $options{bundle_name} // '@Git::VersionManager';    # TODO: default to dist we are in
-    my %exempt = map { $_ => undef } @{ $options{exempt} // [] };
+    my %exempt = map +($_ => undef), @{ $options{exempt} // [] };
 
     my $pluginbundle_meta = -f 'META.json' ? decode_json(path('META.json')->slurp_raw) : undef;
     my $dist_meta = $tzil->distmeta;
 
     subtest 'all plugins in use are specified as *required* runtime prerequisites by the plugin bundle' => sub {
-        foreach my $plugin (uniq map { find_meta($_)->name }
-            grep { $_->plugin_name =~ /^$bundle_name\/[^@]/ } @{$tzil->plugins})
+        foreach my $plugin (uniq map find_meta($_)->name,
+            grep $_->plugin_name =~ /^$bundle_name\/[^@]/, @{$tzil->plugins})
         {
             note($plugin . ' is explicitly exempted; skipping'), next
                 if exists $exempt{$plugin};

@@ -82,8 +82,8 @@ my @bundle_plugins = grep {
     };
 }
 uniq
-map { find_meta($_)->name }
-grep { $_->plugin_name =~ /^$bundle_name\/[^@]/ } @{$tzil->plugins};
+map find_meta($_)->name,
+grep $_->plugin_name =~ /^$bundle_name\/[^@]/, @{$tzil->plugins};
 
 cmp_deeply(
     $tzil->distmeta,
@@ -91,9 +91,9 @@ cmp_deeply(
         prereqs => superhashof({
             develop => superhashof({
                 suggests => superhashof({
-                    map {
-                        $_ => $bundle_plugin_prereqs->{find_meta($_)->name} // 0,
-                    } @bundle_plugins
+                    map
+                        +($_ => $bundle_plugin_prereqs->{find_meta($_)->name} // 0),
+                    @bundle_plugins
                 }),
             }),
         }),

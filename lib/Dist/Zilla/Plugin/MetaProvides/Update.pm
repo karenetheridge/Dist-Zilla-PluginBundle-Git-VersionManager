@@ -27,10 +27,10 @@ sub munge_files
     # find the plugin that does Dist::Zilla::Role::MetaProvider::Provider
     # die if we can't find one -- *something* populated $distmeta->{provides}!
 
-    my @provides_plugins = grep { $_->does('Dist::Zilla::Role::MetaProvider::Provider') } @{$zilla->plugins};
+    my @provides_plugins = grep $_->does('Dist::Zilla::Role::MetaProvider::Provider'), @{$zilla->plugins};
     $self->log_fatal('failed to find any Dist::Zilla::Role::MetaProvider::Provider plugins -- what populated provides?!') if not @provides_plugins;
 
-    foreach my $new_metadata (map { $_->metadata } @provides_plugins)
+    foreach my $new_metadata (map $_->metadata, @provides_plugins)
     {
         foreach my $module (keys %{$new_metadata->{provides}})
         {

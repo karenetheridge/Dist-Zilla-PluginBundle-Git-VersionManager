@@ -167,7 +167,7 @@ around add_plugins => sub
 
     my $remove = $self->payload->{ $self->plugin_remover_attribute } // [];
 
-    foreach my $plugin_spec (@plugins = map { ref $_ ? $_ : [ $_ ] } @plugins)
+    foreach my $plugin_spec (@plugins = map ref $_ ? $_ : [ $_ ], @plugins)
     {
         next if any { $_ eq $plugin_spec->[0] } @$remove;
 
@@ -190,7 +190,7 @@ sub _payload_for
     my ($self, $plugin_name) = @_;
 
     my %extracted;
-    foreach my $full_key (grep { /^\Q$plugin_name.\E/ } keys %{ $self->payload })
+    foreach my $full_key (grep /^\Q$plugin_name.\E/, keys %{ $self->payload })
     {
         (my $base_key = $full_key) =~ s/^\Q$plugin_name.\E//;
         $extracted{$base_key} = delete $self->payload->{$full_key};
